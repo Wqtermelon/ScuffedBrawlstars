@@ -174,7 +174,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 				bullets.remove(i);
 				i--;
 				continue;
-				
+
 			}
 			b.move();
 			Brawler[] tars = new Brawler[6];
@@ -232,7 +232,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 			}
 		}
-		
 
 		// brawler update
 		Brawler[] brls = new Brawler[6];
@@ -258,6 +257,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			}
 		}
 		// priority doesnt work
+
 		/*
 		 * for (int i = 0; i < brls.length; i += 2) { if (brls[i].isPriority) {
 		 * shelly1.runBot(bullets, brls[i], brls[i], brls[i], safe0);
@@ -268,6 +268,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		 * 
 		 * }
 		 */
+
 //bot running
 		shelly0.runBot(bullets, brls[5], brls[3], brls[1], safe1);
 		shelly1.runBot(bullets, brls[4], brls[2], brls[0], safe0);

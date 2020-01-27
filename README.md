@@ -1,2 +1,1 @@
-# BrawlstarsNewest
-Scuffed Brawlstars
+# Scuffed Brawlstars

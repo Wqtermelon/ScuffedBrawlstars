@@ -6,70 +6,74 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Shelly extends Brawler {
+public class Bea extends Brawler {
 	double scale;
-
-	public Shelly(int t, int[] p) {
+	boolean charged;
+	public Bea(int t, int[] p) {
 		super(t, p);
-		maxCharge = 4620;
-		reloadSpeed = 1.25;
-		maxHP = 5040;
+		reloadSpeed = 0.9;
+		maxHP = 3360;
 		HP = maxHP;
 		scale = 2;
-		img = getImage("shelly.png");
-		width = 128 * 2 / 3;
-		height = 256;
-		// range = 7
-		combatTimer = 0;
+		width = 128;
+		height = 128;
+		img = getImage("bea.png");
+		combatTimer =0;
 		init(p[0], p[1]);
-		respawnTimer = 0;
 	}
 
 	public void shoot(ArrayList<Bullet> bullets) {
-		// System.out.println("shelly shot");
+	//	System.out.println("bea shot");
 		if (ammo > 0) {
-			for (int i = 0; i < 5; i++) {
-				bullets.add(new Bullet(team, x + 64, y + 64, 10, theta - Math.PI / 8 + (i * Math.PI / 20), 420, 2, 0));
+			if (charged == true) {
+				bullets.add(new Bullet(team, x + 57, y + 60, 16, theta, 3080, 2, 0));
+				System.out.println("Bea CHARGE");
+			} else {
+				bullets.add(new Bullet(team, x + 57, y + 60, 16, theta, 1120, 2, 0));
 			}
 			ammo--;
 			reload = reloadSpeed;
 			combatTimer = 3;
+			charged= !charged;
 		}
 	}
 
-	public void update(int fps, ArrayList<Bullet> bullets) {
-		if (reload > 0) {
-			reload -= 1 / (double) fps;
-			if (reload <= 0) {
-				ammo++;
-				if (ammo != 3)
-					reload = reloadSpeed;
-			}
+	public void update(int fps, ArrayList<Bullet> bullets){
+		if (combatTimer>0){
+			combatTimer-=1/(double)fps;
 		}
-		if (ammo > 3)
-			ammo = 3;
-		if (combatTimer > 0) {
-			combatTimer -= 1 / (double) fps;
-		}
-		if (combatTimer <= 0) {
+		if (combatTimer<=0){
 			heal();
 		}
-		if (HP <= 0) {
+		if (reload>0){
+			reload-=1/(double)fps;
+			if (reload<=0){
+				ammo++;
+				if (ammo != 3) reload=reloadSpeed;
+			}
+		}
+		if (ammo>3) ammo = 3;
+		if (charged == true) {
+			img = getImage("beaC.png");
+		} else {
+			img = getImage("bea.png");
+		}
+		if (HP<=0){
 			HP = maxHP;
 			x = xi;
 			y = yi;
-			ammo = 3;
 			spin(0);
-			init(x, y);
+			ammo = 3;
+			init(x,y);
 		}
 		move();
 	}
-
-	public void runBot(ArrayList<Bullet> bullets, Brawler brl1, Brawler brl2, Brawler brl3, Safe safe) {
+	//bot
+	public void runBot(ArrayList<Bullet> bullets, Brawler brl1,Brawler brl2, Brawler brl3, Safe safe) {
 		Brawler tar1 = brl1;
 		Brawler tar2 = brl2;
 		Brawler tar3 = brl3;
-		// closest
+		//closest
 		if (Math.abs(brl1.getX() - x) < Math.abs(brl2.getX() - x)
 				&& Math.abs(brl1.getY() - y) < Math.abs(brl2.getY() - y)) {
 			closest = 1;
@@ -80,7 +84,7 @@ public class Shelly extends Brawler {
 				&& Math.abs(brl3.getY() - y) < Math.abs(brl1.getY() - y)) {
 			closest = 3;
 		}
-		// furthest
+		//furthest
 		if (Math.abs(brl1.getX() - x) > Math.abs(brl2.getX() - x)
 				&& Math.abs(brl1.getY() - y) > Math.abs(brl2.getY() - y)) {
 			furthest = 1;
@@ -91,61 +95,33 @@ public class Shelly extends Brawler {
 				&& Math.abs(brl3.getY() - y) > Math.abs(brl1.getY() - y)) {
 			furthest = 3;
 		}
-		if (closest == 1) {
-			tar1 = brl1;
-		} else if (closest == 2) {
-			tar1 = brl2;
-		} else if (closest == 3) {
-			tar1 = brl3;
+		if(closest ==1) {
+			 tar1 = brl1;
+		} else if(closest == 2) {
+			 tar1 = brl2;
+		} else if(closest == 3) {
+			 tar1 = brl3;
 		}
 
-		if (furthest == 1) {
-			tar3 = brl1;
-		} else if (furthest == 2) {
-			tar3 = brl2;
-		} else if (furthest == 3) {
-			tar3 = brl3;
+		if(furthest ==1) {
+			 tar3 = brl1;
+		} else if(furthest == 2) {
+			 tar3 = brl2;
+		} else if(furthest == 3) {
+			 tar3 = brl3;
 		}
 
-		if (team != safe.team) {
-			if (Math.abs(safe.getX() - x) < 100 && Math.abs(safe.getY() - y) < 100) {
+		if(team !=safe.team ) {
+			if(Math.abs(safe.getX()-x)<100&&Math.abs(safe.getY()-y)<100) {
 				isPriority = true;
 			}
 		}
 
-		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 400 * 400) {
-			tar1 = safe;
+		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 300 * 300) {
+			tar1= safe;
 		}
-		if ((x - tar1.getX()) * (x - tar1.getX()) + (y - tar1.getY()) * (y - tar1.getY()) <= 100 * 100) {
-			spin(getAngle(tar1.getX() + 64, tar1.getY() + 128));
-			if (ammo == 3) {
-				shoot(bullets);
-			}
-		} else { // if noone is in range, automove till it finds someone
-			if (x > 0 && x < 1220 && y > -64 && y < 1600)
-				controlMove(1, 2);
-
-		}
-		if (tar1.getX() > x + 16) {
-			controlMove(2, -1);
-		} else if (tar1.getX() + 16 < x) {
-			controlMove(1, -1);
-		} else {
-			controlMove(0, -1);
-		}
-
-		if (tar1.getY() > y + 16) {
-			controlMove(-1, 2);
-		} else if (tar1.getY() + 16 < x) {
-			controlMove(-1, 1);
-		} else {
-			controlMove(-1, 0);
-		}
-		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 400 * 400) {
-			tar2 = safe;
-		}
-		if ((x - tar2.getX()) * (x - tar2.getX()) + (y - tar2.getY()) * (y - tar2.getY()) <= 200 * 200) {
-			spin(getAngle(tar2.getX() + 64, tar2.getY() + 128));
+		if ((x - tar1.getX()) * (x - tar1.getX()) + (y - tar1.getY()) * (y - tar1.getY()) <= 300 * 300) {
+			spin(getAngle(tar1.getX() + 64, tar1.getY() + 64));
 			if (ammo == 3) {
 				shoot(bullets);
 			}
@@ -154,25 +130,24 @@ public class Shelly extends Brawler {
 				controlMove(1, 2);
 
 		}
-		if (tar2.getX() > x + 16)
+		if (tar1.getX() > x + 256)
 			controlMove(2, -1);
-		else if (tar2.getX() + 16 < x)
+		else if (tar1.getX() + 256 < x)
 			controlMove(1, -1);
 		else
 			controlMove(0, -1);
 
-		if (tar2.getY() > y + 16)
+		if (tar1.getY() > y + 256)
 			controlMove(-1, 2);
-		else if (tar2.getY() + 16 < x)
+		else if (tar1.getY() + 256 < x)
 			controlMove(-1, 1);
 		else
 			controlMove(-1, 0);
-
-		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 400 * 400) {
-			tar3 = safe;
+		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 300 * 300) {
+			tar2= safe;
 		}
-		if ((x - tar3.getX()) * (x - tar3.getX()) + (y - tar3.getY()) * (y - tar3.getY()) <= 200 * 200) {
-			spin(getAngle(tar3.getX() + 64, tar3.getY() + 128));
+		if ((x - tar2.getX()) * (x - tar2.getX()) + (y - tar2.getY()) * (y - tar2.getY()) <= 400 * 400) {
+			spin(getAngle(tar2.getX() + 64, tar2.getY() + 64));
 			if (ammo == 3) {
 				shoot(bullets);
 			}
@@ -181,24 +156,52 @@ public class Shelly extends Brawler {
 				controlMove(1, 2);
 
 		}
-		if (tar3.getX() > x + 16)
+		if (tar2.getX() > x + 256)
 			controlMove(2, -1);
-		else if (tar3.getX() + 16 < x)
+		else if (tar2.getX() + 256 < x)
 			controlMove(1, -1);
 		else
 			controlMove(0, -1);
 
-		if (tar3.getY() > y + 16)
+		if (tar2.getY() > y + 256)
 			controlMove(-1, 2);
-		else if (tar3.getY() + 16 < x)
+		else if (tar2.getY() + 256 < x)
+			controlMove(-1, 1);
+		else
+			controlMove(-1, 0);
+
+		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 300 * 300) {
+			tar3= safe;
+		}
+		if ((x - tar3.getX()) * (x - tar3.getX()) + (y - tar3.getY()) * (y - tar3.getY()) <= 400 * 400) {
+			spin(getAngle(tar3.getX() + 64, tar3.getY() + 64));
+			if (ammo == 3) {
+				shoot(bullets);
+			}
+		}else { // if noone is in range, automove till it finds someone
+			if (x > 0 && x < 1220 && y > -64 && y < 1600)
+				controlMove(1, 2);
+
+		}
+		if (tar3.getX() > x + 256)
+			controlMove(2, -1);
+		else if (tar3.getX() + 256 < x)
+			controlMove(1, -1);
+		else
+			controlMove(0, -1);
+
+		if (tar3.getY() > y + 256)
+			controlMove(-1, 2);
+		else if (tar3.getY() + 256 < x)
 			controlMove(-1, 1);
 		else
 			controlMove(-1, 0);
 	}
-
+	
 	// MOVEMENT
 	public void move() {
-		tx.translate(vy * Math.cos(Math.PI / 2 + theta) / scale, vy * Math.sin(Math.PI / 2 + theta) / scale);
+		tx.translate(vy * Math.cos(Math.PI / 2 + theta) / scale,
+				vy * Math.sin(Math.PI / 2 + theta) / scale);
 		tx.translate(vx * Math.cos(theta) / scale, vx * Math.sin(theta) / scale);
 		x += vx;
 		y += vy;
@@ -206,10 +209,9 @@ public class Shelly extends Brawler {
 
 	public void spin(double a) {
 		// By @ArkyLi
-		// System.out.println(theta);
 		double oldangle = theta;
 		theta = a;
-		tx.rotate(oldangle - theta, width / 2 / scale, height / 3 / scale);
+		tx.rotate(oldangle - theta, width / 2 / scale, height / 2 / scale);
 	}
 
 	// DRAWING

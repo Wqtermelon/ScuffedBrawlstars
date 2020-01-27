@@ -120,14 +120,14 @@ public class Bea extends Brawler {
 		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 300 * 300) {
 			tar1= safe;
 		}
-		if ((x - tar1.getX()) * (x - tar1.getX()) + (y - tar1.getY()) * (y - tar1.getY()) <= 600 * 600) {
+		if ((x - tar1.getX()) * (x - tar1.getX()) + (y - tar1.getY()) * (y - tar1.getY()) <= 300 * 300) {
 			spin(getAngle(tar1.getX() + 64, tar1.getY() + 64));
 			if (ammo == 3) {
 				shoot(bullets);
 			}
 		}else { // if noone is in range, automove till it finds someone
 			if (x > 0 && x < 1220 && y > -64 && y < 1600)
-				controlMove(0, 2);
+				controlMove(1, 2);
 
 		}
 		if (tar1.getX() > x + 256)
@@ -146,14 +146,14 @@ public class Bea extends Brawler {
 		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 300 * 300) {
 			tar2= safe;
 		}
-		if ((x - tar2.getX()) * (x - tar2.getX()) + (y - tar2.getY()) * (y - tar2.getY()) <= 600 * 600) {
+		if ((x - tar2.getX()) * (x - tar2.getX()) + (y - tar2.getY()) * (y - tar2.getY()) <= 400 * 400) {
 			spin(getAngle(tar2.getX() + 64, tar2.getY() + 64));
 			if (ammo == 3) {
 				shoot(bullets);
 			}
 		}else { // if noone is in range, automove till it finds someone
 			if (x > 0 && x < 1220 && y > -64 && y < 1600)
-				controlMove(0, 2);
+				controlMove(1, 2);
 
 		}
 		if (tar2.getX() > x + 256)
@@ -173,14 +173,14 @@ public class Bea extends Brawler {
 		if ((x - safe.getX()) * (x - safe.getX()) + (y - safe.getY()) * (y - safe.getY()) <= 300 * 300) {
 			tar3= safe;
 		}
-		if ((x - tar3.getX()) * (x - tar3.getX()) + (y - tar3.getY()) * (y - tar3.getY()) <= 600 * 600) {
+		if ((x - tar3.getX()) * (x - tar3.getX()) + (y - tar3.getY()) * (y - tar3.getY()) <= 400 * 400) {
 			spin(getAngle(tar3.getX() + 64, tar3.getY() + 64));
 			if (ammo == 3) {
 				shoot(bullets);
 			}
 		}else { // if noone is in range, automove till it finds someone
 			if (x > 0 && x < 1220 && y > -64 && y < 1600)
-				controlMove(0, 2);
+				controlMove(1, 2);
 
 		}
 		if (tar3.getX() > x + 256)
